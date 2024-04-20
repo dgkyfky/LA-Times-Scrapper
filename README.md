@@ -1,4 +1,4 @@
-# Latimes Scraper
+# LAtimes Scraper
 The Latimes Scraper is a Python script designed to scrape articles from the Los Angeles Times website. It allows users to specify a search phrase, filter articles by categories, and extract relevant information from the search results.
 
 ## Features
