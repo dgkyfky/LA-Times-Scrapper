@@ -289,3 +289,13 @@ class LatimesScraper:
         finally:
             # Quit the WebDriver to release resources
             self.driver.quit()
+
+
+if __name__ == "__main__":
+    # Example usage
+    search_phrase = 'argentina'
+    #url = "https://www.latimes.com/"
+    categories = []
+    output_folder = 'hola'
+    scraper = LatimesScraper()
+    scraper.scrape(search_phrase, categories, months_back=2, output_folder = output_folder)
