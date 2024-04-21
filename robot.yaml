@@ -1,6 +1,0 @@
----
-name: LA Times Scraper
-output_dir: /output
-dependencies:
-  - pandas
-  - selenium
