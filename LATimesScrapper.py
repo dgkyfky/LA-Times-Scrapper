@@ -12,6 +12,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 import logging
+import argparse
 
 
 class LatimesScraper:
@@ -251,7 +252,7 @@ class LatimesScraper:
             # Log error if an exception occurs during the saving process
             self.logger.error(f'Error occurred while saving results: {e}')
 
-    def scrape(self, search_phrase: str, categories: List[str], months_back: int = 0, output_folder: str = 'Output'):
+    def scrape(self, search_phrase: str, categories: List[str], months_back: int = 0, output_folder: str = 'output'):
         """
         Main method to execute scraping.
 
@@ -290,12 +291,18 @@ class LatimesScraper:
             # Quit the WebDriver to release resources
             self.driver.quit()
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='LA Times Scraper')
+    parser.add_argument('--search_term', required=True, help='Search term for articles')
+    parser.add_argument('--categories', nargs='*', help='List of categories to filter (optional)')
+    parser.add_argument('--months_back', type=int, default=0, help='Number of months back to consider (optional)')
+    parser.add_argument('--output_folder', default='output', help='Path to the output folder (optional)')
+    args = parser.parse_args()
 
-if __name__ == "__main__":
-    # Example usage
-    search_phrase = 'argentina'
-    #url = "https://www.latimes.com/"
-    categories = []
-    output_folder = 'hola'
     scraper = LatimesScraper()
-    scraper.scrape(search_phrase, categories, months_back=2, output_folder = output_folder)
+    try:
+        scraper.scrape(search_phrase=args.search_term, categories=args.categories, months_back=args.months_back, output_folder=args.output_folder)
+    except Exception as e:
+        scraper.logger.error(f'An error occurred: {e}')
+    finally:
+        scraper.driver.quit()
