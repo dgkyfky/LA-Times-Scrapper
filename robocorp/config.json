@@ -1,0 +1,6 @@
+{
+    "search_phrase": "argentina",
+    "categories": ["Business", "Soccer"],
+    "months_back": 2,
+    "output_folder": "output"
+  }
