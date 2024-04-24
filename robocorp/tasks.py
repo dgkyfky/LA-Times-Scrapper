@@ -44,16 +44,6 @@ class LatimesScraper:
         driver.get(self.url)
         return driver
 
-    def _setup_logger(self):
-        """Set up logging configuration."""
-        
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        ch = logging.StreamHandler()
-        ch.setFormatter(formatter)
-        logger.addHandler(ch)
-        return logger
 
     def _search(self, search_phrase: str):
         """
