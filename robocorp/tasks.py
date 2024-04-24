@@ -14,6 +14,9 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 import logging
 import argparse
 
+import json
+
+
 
 class LatimesScraper:
     """Class to scrape articles from the Los Angeles Times website."""
@@ -29,6 +32,12 @@ class LatimesScraper:
         self.url = "https://www.latimes.com/"
         self.driver = self._initialize_driver()
         self.logger = self._setup_logger()
+    
+    def read_config(filename="config.json"):
+        """Reads the configuration from a JSON file."""
+        with open(filename, "r") as file:
+            config = json.load(file)
+        return config
 
     def _initialize_driver(self):
         """Initialize Chrome WebDriver with headless mode and other options."""
@@ -282,16 +291,17 @@ class LatimesScraper:
             self.driver.quit()
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='LA Times Scraper')
-    parser.add_argument('--search_term', required=True, help='Search term for articles')
-    parser.add_argument('--categories', nargs='*', help='List of categories to filter (optional)')
-    parser.add_argument('--months_back', type=int, default=0, help='Number of months back to consider (optional)')
-    parser.add_argument('--output_folder', default='output', help='Path to the output folder (optional)')
-    args = parser.parse_args()
+    # Read configuration from JSON file
+    config = read_config()
+    # Extract variables from config
+    search_phrase = config.get("search_phrase")
+    categories = config.get("categories")
+    months_back = config.get("months_back", 0)
+    output_folder = config.get("output_folder", "Output")
 
     scraper = LatimesScraper()
     try:
-        scraper.scrape(search_phrase=args.search_term, categories=args.categories, months_back=args.months_back, output_folder=args.output_folder)
+        scraper.scrape(search_phrase=search_phrase, categories=categories, months_back=months_back, output_folder=output_folder)
     except Exception as e:
         scraper.logger.error(f'An error occurred: {e}')
     finally:
