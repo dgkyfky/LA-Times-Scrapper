@@ -12,11 +12,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 import logging
-import argparse
-
 import json
 
-
+def read_config(filename="config.json"):
+    """Reads the configuration from a JSON file."""
+    with open(filename, "r") as file:
+        config = json.load(file)
+    return config
 
 class LatimesScraper:
     """Class to scrape articles from the Los Angeles Times website."""
@@ -32,12 +34,6 @@ class LatimesScraper:
         self.url = "https://www.latimes.com/"
         self.driver = self._initialize_driver()
         self.logger = self._setup_logger()
-    
-    def read_config(filename="config.json"):
-        """Reads the configuration from a JSON file."""
-        with open(filename, "r") as file:
-            config = json.load(file)
-        return config
 
     def _initialize_driver(self):
         """Initialize Chrome WebDriver with headless mode and other options."""
@@ -53,6 +49,16 @@ class LatimesScraper:
         driver.get(self.url)
         return driver
 
+    def _setup_logger(self):
+        """Set up logging configuration."""
+        
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        ch = logging.StreamHandler()
+        ch.setFormatter(formatter)
+        logger.addHandler(ch)
+        return logger
 
     def _search(self, search_phrase: str):
         """
@@ -251,7 +257,7 @@ class LatimesScraper:
             # Log error if an exception occurs during the saving process
             self.logger.error(f'Error occurred while saving results: {e}')
 
-    def scrape(self, search_phrase: str, categories: List[str], months_back: int = 0, output_folder: str = 'output'):
+    def scrape(self, search_phrase: str, categories: List[str], months_back: int = 0, output_folder: str = 'Output'):
         """
         Main method to execute scraping.
 
@@ -290,7 +296,8 @@ class LatimesScraper:
             # Quit the WebDriver to release resources
             self.driver.quit()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Read configuration from JSON file
     config = read_config()
     # Extract variables from config
@@ -300,9 +307,4 @@ if __name__ == '__main__':
     output_folder = config.get("output_folder", "Output")
 
     scraper = LatimesScraper()
-    try:
-        scraper.scrape(search_phrase=search_phrase, categories=categories, months_back=months_back, output_folder=output_folder)
-    except Exception as e:
-        scraper.logger.error(f'An error occurred: {e}')
-    finally:
-        scraper.driver.quit()
+    scraper.scrape(search_phrase, categories, months_back=2, output_folder = output_folder)
